@@ -1,0 +1,34 @@
+﻿@using UserService.Models.ViewModels
+@using Microsoft.AspNetCore.Identity
+@model ApplicationUsers
+
+@inject UserManager<ApplicationUser> UserManager
+
+@{
+    ViewData["Title"] = "Users";
+    Layout = "_Layout";
+}
+
+<h2>Users</h2>
+<a class="btn btn-primary" href="Edit" role="button">Register new</a>
+<table class="table">
+    <thead>
+        <tr>
+            <th scope="col">Действия</th>
+            <th scope="col">Email</th>
+            <th scope="col">ФИО</th>
+        </tr>
+    </thead>
+    <tbody>
+        @foreach (var item in Model.Users)
+        {
+            <tr>
+                @{bool isAdmin = await UserManager.IsInRoleAsync(item, "Admin");}
+                @{bool isNotAdmin = !isAdmin;}
+                <td><a href="Edit?id=@item.Id">Edit</a> <a href="Delete?id=@item.Id">Delete</a> <a hidden="@isNotAdmin" href="ToggleAdmin?id=@item.Id">Take off admin rights</a> <a hidden="@isAdmin" href="ToggleAdmin?id=@item.Id">Give admin rights</a></td>
+                <td>@item.Email</td>
+                <td>@item.FullName</td>
+            </tr>
+        }
+    </tbody>
+</table>
